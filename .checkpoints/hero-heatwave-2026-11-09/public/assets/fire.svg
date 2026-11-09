@@ -1,0 +1,109 @@
+<svg class="fire-art" viewBox="770 -68 420 460" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<style>
+  /* A slow heat front climbs the fixed tile grid; the four tip tiles drift like embers. */
+  /* .cN = palette entry, .tN = row from the top, .sN = tip ember. */
+  @media (prefers-reduced-motion: no-preference) {
+    .c0 { animation: heat-0 5.2s ease-in-out infinite; }
+    .c1 { animation: heat-1 5.2s ease-in-out infinite; }
+    .c2 { animation: heat-2 5.2s ease-in-out infinite; }
+    .c3 { animation: heat-3 5.2s ease-in-out infinite; }
+    .t2 { animation-delay: 0s; }
+    .t3 { animation-delay: -.26s; }
+    .t4 { animation-delay: -.52s; }
+    .t5 { animation-delay: -.78s; }
+    .t6 { animation-delay: -1.04s; }
+    .t7 { animation-delay: -1.3s; }
+    .t8 { animation-delay: -1.56s; }
+    .t9 { animation-delay: -1.82s; }
+    .t10 { animation-delay: -2.08s; }
+    .spark { animation: ember 7.6s ease-in-out infinite; }
+    .s1 { animation-duration: 7.6s; animation-delay: -1.1s; }
+    .s2 { animation-duration: 8.2s; animation-delay: -3.4s; }
+    .s3 { animation-duration: 9.4s; animation-delay: -5.2s; }
+    .s4 { animation-duration: 10.8s; animation-delay: -7.6s; }
+  }
+  @keyframes heat-0 {
+    0%, 36% { fill: #4c3022; }
+    43% { fill: #7a4d2c; }
+    50%, 100% { fill: #4c3022; }
+  }
+  @keyframes heat-1 {
+    0%, 36% { fill: #9c411e; }
+    43% { fill: #c95520; }
+    50%, 100% { fill: #9c411e; }
+  }
+  @keyframes heat-2 {
+    0%, 36% { fill: #f5460b; }
+    43% { fill: #ff7a2e; }
+    50%, 100% { fill: #f5460b; }
+  }
+  @keyframes heat-3 {
+    0%, 36% { fill: #f59e0b; }
+    43% { fill: #ffcc4d; }
+    50%, 100% { fill: #f59e0b; }
+  }
+  @keyframes ember {
+    0%, 100% { opacity: 1; transform: translateY(0); }
+    45% { opacity: .66; transform: translateY(-6px); }
+    62% { opacity: .9; transform: translateY(-2px); }
+  }
+</style>
+<path class="spark s1" d="M1140 -55h34l-14 35h-34z" fill="#9c411e"/>
+<path class="spark s2" d="M1064 -15h34l-14 35h-34z" fill="#4c3022"/>
+<path class="spark s3" d="M1102 -15h34l-14 35h-34z" fill="#9c411e"/>
+<path class="spark s4" d="M1140 -15h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c0 t2" d="M1026 25h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c1 t2" d="M1064 25h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t2" d="M1102 25h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t2" d="M1140 25h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c0 t3" d="M950 65h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c0 t3" d="M988 65h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c1 t3" d="M1026 65h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t3" d="M1064 65h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t3" d="M1102 65h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t3" d="M1140 65h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c0 t4" d="M912 105h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c1 t4" d="M950 105h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t4" d="M988 105h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t4" d="M1026 105h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t4" d="M1064 105h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t4" d="M1102 105h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t4" d="M1140 105h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c0 t5" d="M874 145h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c1 t5" d="M912 145h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t5" d="M950 145h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t5" d="M988 145h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t5" d="M1026 145h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t5" d="M1064 145h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t5" d="M1102 145h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c0 t5" d="M1140 145h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c0 t6" d="M836 185h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c1 t6" d="M874 185h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t6" d="M912 185h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t6" d="M950 185h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t6" d="M988 185h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t6" d="M1026 185h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t6" d="M1064 185h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c0 t7" d="M798 225h34l-14 35h-34z" fill="#4c3022"/>
+<path class="cell c1 t7" d="M836 225h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t7" d="M874 225h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t7" d="M912 225h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t7" d="M950 225h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t7" d="M988 225h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t7" d="M1026 225h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c1 t8" d="M798 265h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t8" d="M836 265h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t8" d="M874 265h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t8" d="M912 265h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t8" d="M950 265h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t8" d="M988 265h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c2 t9" d="M798 305h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c3 t9" d="M836 305h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t9" d="M874 305h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t9" d="M912 305h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t9" d="M950 305h34l-14 35h-34z" fill="#9c411e"/>
+<path class="cell c3 t10" d="M798 345h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c3 t10" d="M836 345h34l-14 35h-34z" fill="#f59e0b"/>
+<path class="cell c2 t10" d="M874 345h34l-14 35h-34z" fill="#f5460b"/>
+<path class="cell c1 t10" d="M912 345h34l-14 35h-34z" fill="#9c411e"/>
+</svg>
