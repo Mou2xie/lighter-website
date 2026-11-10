@@ -1,5 +1,6 @@
-const english = document.documentElement.lang === 'en';
 import { copyText } from './clipboard';
+
+const english = document.documentElement.lang === 'en';
 
 const toggle = document.querySelector<HTMLButtonElement>('#docs-menu');
 const sidebar = document.querySelector<HTMLElement>('#docs-sidebar');

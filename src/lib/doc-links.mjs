@@ -1,10 +1,10 @@
 import path from 'node:path';
+import { localizePath } from './i18n.mjs';
 
 export function docHref(id, locale = 'en') {
   if (id.startsWith('en/')) { locale = 'en'; id = id.slice(3); }
-  const prefix = locale === 'zh' ? '/zh' : '';
   const slug = id.replace(/\.md$/i, '').replace(/(^|\/)index$/i, '$1').replace(/\/$/, '');
-  return slug ? `${prefix}/docs/${slug}/` : `${prefix}/docs/`;
+  return localizePath(slug ? `/docs/${slug}/` : '/docs/', locale);
 }
 
 export function resolveDocLink(target, sourceId) {
@@ -16,5 +16,5 @@ export function resolveDocLink(target, sourceId) {
   const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(sourceId), decodeURI(pathname)));
   if (resolved === '..' || resolved.startsWith('../')) return target;
   if (/\.md$/i.test(resolved)) return docHref(resolved, locale) + suffix;
-  return `${locale === 'zh' ? '/zh' : ''}/docs/${resolved}` + suffix;
+  return localizePath(`/docs/${resolved}`, locale) + suffix;
 }

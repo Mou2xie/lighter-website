@@ -12,7 +12,7 @@ interface Props {
 const locale = localeFromPath(Astro.url.pathname);
 const t = (zh: string, en: string) => translate(locale, zh, en);
 const {
-  title = t('Lighter — 点燃想法，轻装构建 Agent', 'Lighter — A lightweight TypeScript AI agent framework'),
+  title = t('Lighter — 轻量化 TypeScript AI Agent 框架', 'Lighter — A lightweight TypeScript AI agent framework'),
   description = t('轻量的 TypeScript AI Agent 框架。连接模型，调用工具，开始创造。', 'A lightweight TypeScript AI agent framework. Connect models, call tools, and start building.'),
   class: bodyClass,
 } = Astro.props;

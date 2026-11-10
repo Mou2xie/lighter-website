@@ -58,3 +58,19 @@ export function groupDocs(docs: Awaited<ReturnType<typeof getDocs>>) {
   }
   return [...groups].map(([title, pages]) => ({ title, pages }));
 }
+
+export async function getDocPaths(locale: 'zh' | 'en') {
+  const docs = await getDocs(locale);
+  const base = docHref('index', locale);
+  return docs.map((doc, index) => ({
+    params: { slug: doc.href.slice(base.length).replace(/\/$/, '') || undefined },
+    props: { doc, docs, previous: docs[index - 1], next: docs[index + 1] },
+  }));
+}
+
+export async function docsSearchResponse(locale: 'zh' | 'en') {
+  const docs = await getDocs(locale);
+  return new Response(JSON.stringify(docs.map(({ title, href, section, body }) => ({
+    title, href, section, text: plainText(body),
+  }))), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+}

@@ -15,6 +15,7 @@ export default function remarkDocs() {
         last.children.every(node => node.type === 'link' || node.type === 'text') &&
         last.children.some(node => /[←→]/.test(JSON.stringify(node)))) tree.children.pop();
 
+    let diagramIndex = 0;
     function walk(node) {
       if (node.type === 'link' || node.type === 'image' || node.type === 'definition') {
         node.url = resolveDocLink(node.url, sourceId);
@@ -26,7 +27,7 @@ export default function remarkDocs() {
           font: 'system-ui, sans-serif', padding: 24,
         });
         // Mermaid marker IDs must be unique if a page contains multiple diagrams.
-        const prefix = createHash('sha256').update(sourceId + node.value).digest('hex').slice(0, 10);
+        const prefix = createHash('sha256').update(`${sourceId}:${diagramIndex++}:${node.value}`).digest('hex').slice(0, 10);
         svg = svg.replace(/id="([^"]+)"/g, `id="${prefix}-$1"`)
           .replace(/url\(#([^)]+)\)/g, `url(#${prefix}-$1)`);
         node.type = 'html';

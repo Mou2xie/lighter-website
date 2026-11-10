@@ -1,12 +1,6 @@
 ---
 import DocPage from '../../components/DocPage.astro';
-import { getDocs } from '../../lib/docs';
-export async function getStaticPaths() {
-  const docs = await getDocs('en');
-  return docs.map((doc, index) => ({
-    params: { slug: doc.href.slice(6).replace(/\/$/, '') || undefined },
-    props: { doc, docs, previous: docs[index - 1], next: docs[index + 1] },
-  }));
-}
+import { getDocPaths } from '../../lib/docs';
+export const getStaticPaths = () => getDocPaths('en');
 ---
 <DocPage {...Astro.props} />

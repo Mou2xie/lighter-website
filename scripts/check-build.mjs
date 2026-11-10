@@ -51,10 +51,12 @@ for (const file of htmlFiles) {
     assert.equal(switchHref, localizePath(route, locale === 'en' ? 'zh' : 'en'), `Wrong counterpart: ${route}`);
     if (locale === 'en') {
       assert.ok(!/[\u4e00-\u9fff]/.test(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || ''), `Untranslated title: ${route}`);
-      for (const anchor of html.matchAll(/<a\b[^>]*>/g)) {
-        if (anchor[0].includes('data-language-switch')) continue;
-        assert.ok(!/href="\/(?:zh|en)\/(?:docs\/|llms)/.test(anchor[0]), `English link leaves its locale: ${route}`);
-      }
+    }
+    for (const anchor of html.matchAll(/<a\b[^>]*>/g)) {
+      if (anchor[0].includes('data-language-switch')) continue;
+      const href = anchor[0].match(/href="([^"]+)"/)?.[1];
+      if (!href?.startsWith('/') || href.startsWith('//') || href.startsWith('/assets/')) continue;
+      assert.equal(href, localizePath(href, locale), `Link leaves its locale or uses a legacy address: ${route} → ${href}`);
     }
   }
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
