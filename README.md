@@ -51,7 +51,8 @@ src/
   lib/              文档导航、链接转换与索引生成
 scripts/            文档构建插件、静态产物检查
 public/assets/      Lighter 原有 SVG 品牌素材
-design/             原始独立 HTML 设计稿
+test/               文档链接与构建源测试
+.checkpoints/       已确认版本的完整快照
 ```
 
 ## 静态功能
