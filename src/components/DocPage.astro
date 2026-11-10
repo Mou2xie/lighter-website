@@ -31,7 +31,16 @@ const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 
     </aside>
     <main class="doc-main" id="main">
       <div class="doc-breadcrumb"><a href={localizePath("/docs/", locale)}>{t("文档", "Docs")}</a><span aria-hidden="true">/</span><span>{doc.section}</span></div>
-      <div class="doc-title"><span class="eyebrow">LIGHTER / DOCUMENTATION</span><h1>{doc.title}</h1></div>
+      <div class="doc-title">
+        <span class="eyebrow">LIGHTER / DOCUMENTATION</span>
+        <div class="doc-title-row">
+          <h1>{doc.title}</h1>
+          <button type="button" class="page-copy" hidden aria-label={t("复制本页正文", "Copy page content")}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"/></svg>
+            <span>{t("复制页面", "Copy page")}</span>
+          </button>
+        </div>
+      </div>
       <article class="doc-content"><Content /></article>
       <div class="doc-source"><a href={localizePath("/llms-full.txt", locale)}>{t("完整文档（纯文本）", "Full documentation (plain text)")} <span aria-hidden="true">↗</span></a><a href="https://github.com/Mou2xie/lighter/issues">{t("反馈问题 ↗", "Report an issue \u2197")}</a></div>
       <div class="doc-pagination" aria-label={t("文档翻页", "Documentation pagination")}>

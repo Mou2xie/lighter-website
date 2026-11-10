@@ -30,7 +30,12 @@
 .doc-breadcrumb a:hover { color: var(--amber); }
 .doc-title { padding-bottom: 28px; border-bottom: 1px solid var(--line); margin-bottom: 30px; }
 .doc-title .eyebrow { font-size: 10px; }
-.doc-title h1 { font-size: 38px; line-height: 1.35; letter-spacing: -.03em; margin: 14px 0 0; overflow-wrap: anywhere; }
+.doc-title-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.doc-title h1 { min-width: 0; font-size: 38px; line-height: 1.35; letter-spacing: -.03em; margin: 0; overflow-wrap: anywhere; }
+.page-copy { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 3px; background: transparent; color: var(--muted); font: 12px var(--sans); cursor: pointer; }
+.page-copy[hidden] { display: none; }
+.page-copy:hover { color: var(--amber); border-color: #8e6b33; background: #f59e0b04; }
+.page-copy:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 .doc-content { color: #d0cdc3; font-size: 15px; line-height: 1.95; overflow-wrap: anywhere; }
 .doc-content > :first-child { margin-top: 0; }
 .doc-content h2 { color: var(--ink); font-size: 24px; font-weight: 550; line-height: 1.5; letter-spacing: -.025em; margin: 48px 0 18px; padding-top: 8px; scroll-margin-top: 28px; }

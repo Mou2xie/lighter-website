@@ -2,6 +2,24 @@ import { copyText } from './clipboard';
 
 const english = document.documentElement.lang === 'en';
 
+const pageCopy = document.querySelector<HTMLButtonElement>('.page-copy');
+const pageContent = document.querySelector<HTMLElement>('.doc-content');
+if (pageCopy && pageContent) {
+  pageCopy.hidden = false;
+  pageCopy.addEventListener('click', async () => {
+    // Read rendered text without including the code-block copy controls.
+    const content = pageContent.cloneNode(true) as HTMLElement;
+    content.querySelectorAll('button').forEach(button => button.remove());
+    content.setAttribute('aria-hidden', 'true');
+    content.inert = true;
+    content.style.cssText = `position:fixed;left:-100000px;top:0;width:${pageContent.offsetWidth}px;pointer-events:none`;
+    document.body.append(content);
+    const text = content.innerText.trim();
+    content.remove();
+    await copyText(text);
+  });
+}
+
 const toggle = document.querySelector<HTMLButtonElement>('#docs-menu');
 const sidebar = document.querySelector<HTMLElement>('#docs-sidebar');
 toggle?.addEventListener('click', () => {
