@@ -1,5 +1,9 @@
 # Lighter Website
 
+[![npm version](https://img.shields.io/npm/v/%40yong_xie%2Flighter)](https://www.npmjs.com/package/@yong_xie/lighter)
+
+Website: [https://www.lighteragent.dev/](https://www.lighteragent.dev/)
+
 The official Lighter website, built with Astro as a fully static site. It includes a bilingual homepage and technical documentation maintained in this repository's `doc/` directory. Deploy the generated `dist/` directory to any compatible static host; no Node.js server, database, or runtime API is required.
 
 ## Local Development
