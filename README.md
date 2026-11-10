@@ -52,7 +52,6 @@ src/
 scripts/            文档构建插件、静态产物检查
 public/assets/      Lighter 原有 SVG 品牌素材
 test/               文档链接与构建源测试
-.checkpoints/       已确认版本的完整快照
 ```
 
 ## 静态功能
