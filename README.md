@@ -1,71 +1,74 @@
-# Lighter 官网
+# Lighter Website
 
-使用 Astro 构建的纯静态官网。保留已确认的首页风格，技术文档统一保存在本项目的 `doc/` 目录。部署时只需托管 `dist/`，不需要 Node 服务、数据库或运行时 API。
+The official Lighter website, built with Astro as a fully static site. It includes a bilingual homepage and technical documentation maintained in this repository's `doc/` directory. Deploy the generated `dist/` directory to any compatible static host; no Node.js server, database, or runtime API is required.
 
-## 本地开发
+## Local Development
 
-需要 Node.js 22.22.0 或更高版本。
+Requires Node.js 22.22.0 or later.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-开发地址以终端输出为准，默认是 `http://127.0.0.1:4321/`。
+Use the development URL printed in the terminal. The default is `http://127.0.0.1:4321/`.
 
-## 文档维护
+## Maintaining Documentation
 
-`doc/` 是技术文档的唯一内容来源，已从 Lighter 框架项目迁入。以后直接在本项目修改、增加和提交文档，不在框架项目保留副本，也不需要检出框架仓库才能构建官网。
+`doc/` is the single source of truth for technical documentation, migrated from the Lighter framework repository. Edit, add, and commit documentation here. There is no need to keep duplicate files in the framework repository or check it out to build the website.
 
-中文文档保存在 `doc/`，英语译文保存在 `doc/en/`，两种语言使用相同的相对文件名。文档使用 Markdown，不要求添加 frontmatter。修改原文后重新构建；开发模式下 Markdown 更新会自动同步。分类和默认阅读顺序位于 `src/lib/docs.ts`，新文档会自动生成路由。修改链接转换、语言路由或图表渲染规则后，文档缓存会在下次构建时自动刷新。
+Chinese documentation lives in `doc/`, with English translations in `doc/en/`. Both languages use matching relative file paths. Documents use Markdown and do not require frontmatter. Rebuild after editing source files; Markdown changes sync automatically during local development. Categories and the default reading order are defined in `src/lib/docs.ts`, and routes are generated automatically for new documents. Changes to link conversion, language routing, or diagram rendering rules invalidate the documentation cache on the next build.
 
-`llms.txt` 和 `llms-full.txt` 由官网构建流程从 Markdown 自动生成，无需手动编辑或保存重复内容。旧文档的独立生成脚本已由这套流程替代。
+The build generates `llms.txt` and `llms-full.txt` directly from Markdown. These files do not need manual editing or duplicate source content. This workflow replaces the previous standalone documentation generation scripts.
 
-不要将 API key 写入官网文件；代码块里的环境变量仅是教程示例。
+Do not include API keys in website files. Environment variables shown in code blocks are tutorial examples only.
 
-## 检查与构建
+## Validation and Build
 
 ```sh
 npm run verify
 ```
 
-这会检查 Astro / TypeScript、测试文档链接转换、生成静态页面，并检查全部站内链接、锚点、文档覆盖率和搜索索引。
+This runs Astro and TypeScript checks, tests documentation link conversion, language routing, source ownership, cache invalidation, and diagram IDs, then builds the static site and validates internal links, anchors, translation coverage, language-switch destinations, search indexes, and generated documentation files.
 
 ```sh
 npm run build
 npm run preview
 ```
 
-`dev` 和 `preview` 仅用于本地预览。发布目录是 `dist/`，使用支持目录索引（`/docs/` 对应 `/docs/index.html`）的任意静态托管服务即可。将 `404.html` 配置为缺失页面，无需 SPA 回退。
+The `dev` and `preview` commands are for local preview. Deploy `dist/` to a static host that supports directory indexes (`/docs/` resolves to `/docs/index.html`). Configure `404.html` as the fallback for missing pages. No SPA fallback is needed.
 
-## 项目结构
+## Project Structure
 
 ```text
-doc/                技术文档的唯一源文件
+doc/                Technical documentation source (Chinese)
+  en/               Matching English translations
 src/
-  components/       共享导航与页脚
-  layouts/          页面基础布局
-  pages/            首页、文档路由、404、静态索引
-  styles/           品牌样式与文档排版
-  scripts/          浏览器交互：导航、复制、站内搜索
-  lib/              文档导航、链接转换与索引生成
-scripts/            文档构建插件、静态产物检查
-public/assets/      Lighter 原有 SVG 品牌素材
-test/               文档链接与构建源测试
+  components/       Shared homepage, documentation, header, and footer components
+  layouts/          Base page layout
+  pages/            Homepages, documentation routes, 404 pages, and static indexes
+  styles/           Brand styles and documentation typography
+  scripts/          Browser interactions: navigation, copying, and local search
+  lib/              Documentation navigation, localization, links, and indexes
+scripts/            Documentation build plugins and static output validation
+public/assets/      Lighter SVG brand assets
+test/               Documentation, localization, and build source tests
 ```
 
-## 静态功能
+## Features
 
-- 每篇 Markdown 在构建时生成 HTML；相对 `.md` 链接转换为站内路由。
-- 代码高亮、页内目录和 Mermaid 流程图均在构建时生成。
-- 文档搜索仅在浏览器中读取当前语言的静态索引（`/docs/search.json` 或 `/zh/docs/search.json`），不发送搜索词。
-- `/llms.txt`、`/llms-full.txt` 及其 `/docs/` 别名均为构建生成的文本文件。
-- 网站不安装服务端适配器，不使用 SSR、服务端 actions 或数据库。
+- Each Markdown document becomes an HTML page at build time. Relative `.md` links are converted to internal routes.
+- Syntax highlighting, table-of-contents entries, and Mermaid flowcharts are generated at build time.
+- Documentation search runs in the browser using the current language's static index (`/docs/search.json` or `/zh/docs/search.json`). Search queries are not sent to a server.
+- A **Copy page** button to the right of each document title copies the current article's rendered text, including code, to the clipboard. It excludes the page title, navigation, footer, and code-copy button labels. The Chinese label is **复制页面**.
+- Individual code blocks have their own copy buttons. Both page and code copying show localized success or manual-copy feedback and use a fallback when the Clipboard API is unavailable or fails.
+- `/llms.txt`, `/llms-full.txt`, and their `/docs/` aliases are generated as static text files.
+- The site uses no server adapter, server-side rendering, server actions, or database.
 
-## 双语页面
+## Bilingual Pages
 
-- 默认语言为英语：首页为 `/`，文档位于 `/docs/`；中文首页为 `/zh/`，文档位于 `/zh/docs/`。旧 `/en/` 页面地址会自动转到不带语言前缀的英语页面。
-- 顶部导航最右侧切换语言，链接指向当前页面的对应译文；首页的区块锚点也会保留。
-- 两种语言共享首页与文档页面组件，保持样式、动效和功能同步。
-- 中英文搜索索引、代码示例、复制提示、404 页面以及 `llms.txt` / `llms-full.txt` 分别生成。
-- 修改文档时同步维护 `doc/en/` 下的对应译文。新增文档必须有两种语言版本，`npm run verify` 会检查覆盖率、站内链接及语言切换目标。
+- English is the default: the homepage is at `/` and documentation is under `/docs/`. The Chinese homepage is at `/zh/`, with documentation under `/zh/docs/`. Legacy `/en/` page URLs redirect to their English equivalents without a language prefix.
+- The language switch at the right end of the header links to the current page's translation and preserves homepage section anchors.
+- Both languages share homepage and documentation components to keep styles, animations, and features consistent.
+- Search indexes, code examples, copy feedback, 404 pages, and `llms.txt` / `llms-full.txt` are localized for each language.
+- Keep Chinese documents and their translations in `doc/en/` in sync. Every new document must have both language versions. `npm run verify` checks coverage, internal links, and language-switch destinations.
