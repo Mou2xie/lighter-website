@@ -1,3 +1,4 @@
+const english = document.documentElement.lang === 'en';
 import { copyText } from './clipboard';
 
 const toggle = document.querySelector<HTMLButtonElement>('#docs-menu');
@@ -22,8 +23,8 @@ document.querySelectorAll<HTMLPreElement>('.doc-content pre').forEach(pre => {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'code-copy';
-  button.textContent = '复制';
-  button.setAttribute('aria-label', '复制代码');
+  button.textContent = english ? 'Copy' : '复制';
+  button.setAttribute('aria-label', english ? 'Copy code' : '复制代码');
   button.addEventListener('click', () => copyText(pre.querySelector('code')?.textContent || ''));
   wrapper.append(button);
   pre.tabIndex = 0;
@@ -39,7 +40,7 @@ let revision = 0;
 
 function loadIndex() {
   if (!searchIndex) {
-    searchIndex = fetch('/docs/search.json').then(response => {
+    searchIndex = fetch(english ? '/docs/search.json' : '/zh/docs/search.json').then(response => {
       if (!response.ok) throw new Error('Search index unavailable');
       return response.json() as Promise<SearchEntry[]>;
     }).catch(error => { searchIndex = undefined; throw error; });
@@ -57,14 +58,14 @@ search?.addEventListener('input', async () => {
   groups.hidden = Boolean(query);
   status.textContent = '';
   if (!query) return;
-  status.textContent = '搜索中…';
+  status.textContent = english ? 'Searching…' : '搜索中…';
   try {
     const index = await loadIndex();
     if (request !== revision) return;
     const tokens = query.split(/\s+/);
     const matches = index.filter(entry => tokens.every(token => `${entry.title} ${entry.text}`.toLocaleLowerCase().includes(token)))
       .sort((a, b) => Number(b.title.toLocaleLowerCase().includes(query)) - Number(a.title.toLocaleLowerCase().includes(query)));
-    status.textContent = matches.length ? `${matches.length} 篇相关文档` : '没有找到相关内容。';
+    status.textContent = matches.length ? (english ? `${matches.length} matching documents` : `${matches.length} 篇相关文档`) : (english ? 'No matching documents.' : '没有找到相关内容。');
     for (const entry of matches.slice(0, 8)) {
       const li = document.createElement('li');
       const link = document.createElement('a');
@@ -82,7 +83,7 @@ search?.addEventListener('input', async () => {
     }
   } catch {
     if (request !== revision) return;
-    status.textContent = '搜索暂不可用，请使用文档目录。';
+    status.textContent = english ? 'Search is unavailable. Please use the documentation navigation.' : '搜索暂不可用，请使用文档目录。';
     groups.hidden = false;
   }
 });

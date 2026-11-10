@@ -3,6 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { docsRoot, projectRoot } from './docs-source.mjs';
 import { docHref } from '../src/lib/doc-links.mjs';
+import { localeFromPath, localizePath } from '../src/lib/i18n.mjs';
 
 const dist = path.join(projectRoot, 'dist');
 async function filesAt(root) {
@@ -36,9 +37,29 @@ for (const file of htmlFiles) {
   const html = await htmlAt(file);
   const route = '/' + path.relative(dist, file).split(path.sep).join('/').replace(/index\.html$/, '');
   const current = new URL(route, 'https://lighter.invalid');
+  const locale = localeFromPath(route);
+  const redirect = html.match(/data-redirect="([^"]+)"/)?.[1];
+  if (redirect) {
+    assert.ok(route.startsWith('/en/'), `Unexpected redirect: ${route}`);
+    assert.equal(redirect, localizePath(route, 'en'), `Wrong legacy English redirect: ${route}`);
+    await stat(await outputFile(new URL(redirect, current)));
+  } else {
+    assert.ok(html.includes(`lang="${locale === 'en' ? 'en' : 'zh-CN'}"`), `Wrong page language: ${route}`);
+    const languageSwitch = html.match(/<a\b[^>]*data-language-switch[^>]*>/)?.[0];
+    assert.ok(languageSwitch, `Missing language switch: ${route}`);
+    const switchHref = languageSwitch.match(/href="([^"]+)"/)?.[1];
+    assert.equal(switchHref, localizePath(route, locale === 'en' ? 'zh' : 'en'), `Wrong counterpart: ${route}`);
+    if (locale === 'en') {
+      assert.ok(!/[\u4e00-\u9fff]/.test(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || ''), `Untranslated title: ${route}`);
+      for (const anchor of html.matchAll(/<a\b[^>]*>/g)) {
+        if (anchor[0].includes('data-language-switch')) continue;
+        assert.ok(!/href="\/(?:zh|en)\/(?:docs\/|llms)/.test(anchor[0]), `English link leaves its locale: ${route}`);
+      }
+    }
+  }
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
   assert.equal(new Set(ids).size, ids.length, `Duplicate IDs: ${route}`);
-  assert.equal([...html.matchAll(/<h1(?:\s|>)/g)].length, 1, `Expected one h1: ${route}`);
+  assert.equal([...html.matchAll(/<h1(?:\s|>)/g)].length, redirect ? 0 : 1, `Expected one h1: ${route}`);
   for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
     const href = match[1].replaceAll('&amp;', '&');
     if (/^(?:data:|mailto:|tel:|javascript:)/i.test(href)) continue;
@@ -58,11 +79,23 @@ for (const file of htmlFiles) {
 }
 for (const file of documents) {
   const id = path.relative(docsRoot, file).split(path.sep).join('/');
-  await stat(await outputFile(new URL(docHref(id), 'https://lighter.invalid')));
+  await stat(await outputFile(new URL(docHref(id, id.startsWith('en/') ? 'en' : 'zh'), 'https://lighter.invalid')));
 }
-const search = JSON.parse(await readFile(path.join(dist, 'docs/search.json'), 'utf8'));
-assert.equal(search.length, documents.length, 'Every document must be searchable');
-assert.ok((await readFile(path.join(dist, 'docs/getting-started/concepts/index.html'), 'utf8')).includes('class="doc-diagram"'), 'Mermaid must render at build time');
+const chineseIds = documents.map(file => path.relative(docsRoot, file).split(path.sep).join('/')).filter(id => !id.startsWith('en/')).sort();
+const englishIds = documents.map(file => path.relative(docsRoot, file).split(path.sep).join('/')).filter(id => id.startsWith('en/')).map(id => id.slice(3)).sort();
+assert.deepEqual(englishIds, chineseIds, 'Every document must have an English translation');
+for (const prefix of ['', 'zh/']) {
+  const search = JSON.parse(await readFile(path.join(dist, prefix, 'docs/search.json'), 'utf8'));
+  assert.equal(search.length, chineseIds.length, 'Every document must be searchable in its own language');
+  assert.ok(search.every(entry => entry.href.startsWith('/' + prefix + 'docs/')), 'Search results must stay in their locale');
+  if (!prefix) assert.ok(search.every(entry => !/[\u4e00-\u9fff]/.test(entry.text)), 'English search must contain translated content');
+  assert.ok((await readFile(path.join(dist, prefix, 'docs/getting-started/concepts/index.html'), 'utf8')).includes('class="doc-diagram"'), 'Mermaid must render at build time in both languages');
+  const indexText = await readFile(path.join(dist, prefix, 'llms.txt'), 'utf8');
+  const fullText = await readFile(path.join(dist, prefix, 'llms-full.txt'), 'utf8');
+  assert.ok(indexText.includes('/' + prefix + 'docs/getting-started/quickstart/'), 'AI index must link to its own locale');
+  assert.ok(fullText.includes('/' + prefix + 'docs/guides/tools/'), 'Full AI documentation must link to its own locale');
+  if (!prefix) assert.ok(!/[\u4e00-\u9fff]/.test(fullText), 'Full English AI documentation must be translated');
+}
 assert.ok(!files.some(file => /\/(?:server|functions)\//.test(file)), 'Output must not contain a server');
 assert.deepEqual(failures, [], 'Broken links in static output');
 console.log(`Verified ${documents.length} documents, ${htmlFiles.length} HTML pages, ${links} internal links, search index, and static diagram.`);

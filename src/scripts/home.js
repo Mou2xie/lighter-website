@@ -1,5 +1,6 @@
-import { samples } from "../data/examples";
+import { getSamples } from "../data/examples";
 import { copyText } from "./clipboard";
+const samples = getSamples(document.documentElement.lang === 'en' ? 'en' : 'zh');
 let current='basic';
 const escapeHtml=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 function highlight(line){

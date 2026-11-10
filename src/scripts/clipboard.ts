@@ -20,6 +20,7 @@ export async function copyText(text: string) {
   const toast = document.querySelector<HTMLElement>('.toast');
   if (!toast) return;
   clearTimeout(timer);
-  toast.textContent = success ? '已复制到剪贴板' : '请选中内容手动复制';
+  const english = document.documentElement.lang === 'en';
+  toast.textContent = success ? (english ? 'Copied to clipboard' : '已复制到剪贴板') : (english ? 'Select the text to copy it manually' : '请选中内容手动复制');
   timer = setTimeout(() => { toast.textContent = ''; }, 2400);
 }

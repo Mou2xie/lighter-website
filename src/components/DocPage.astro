@@ -1,0 +1,48 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDocs, groupDocs } from '../lib/docs';
+import { localizePath, translate } from '../lib/i18n.mjs';
+import '../styles/docs.css';
+type Doc = Awaited<ReturnType<typeof getDocs>>[number];
+interface Props { doc: Doc; docs: Doc[]; previous?: Doc; next?: Doc }
+const { doc, docs, previous, next } = Astro.props;
+const { Content, headings } = await render(doc.entry);
+const groups = groupDocs(docs);
+const locale = doc.locale;
+const t = (zh: string, en: string) => translate(locale, zh, en);
+const toc = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
+---
+<BaseLayout title={`${doc.title} · Lighter ${t('文档', 'Docs')}`} description={doc.description} class="docs-page">
+  <div class="docs-mobile-bar"><button id="docs-menu" aria-expanded="false" aria-controls="docs-sidebar">{t("文档目录", "Contents")} <span aria-hidden="true">☰</span></button><span>{doc.label}</span></div>
+  <div class="docs-shell">
+    <aside class="docs-sidebar" id="docs-sidebar" aria-label={t("文档导航", "Documentation navigation")}>
+      <div class="docs-search">
+        <label for="docs-search">{t("搜索文档", "Search documentation")}</label>
+        <div class="search-field"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="docs-search" type="search" placeholder={t("搜索文档…", "Search documentation\u2026")} autocomplete="off" aria-controls="search-results" /></div>
+        <p class="search-status" role="status" aria-live="polite" id="search-status"></p>
+        <ul id="search-results" class="search-results" hidden></ul>
+        <noscript><p class="search-status">{t("可通过下方目录浏览全部文档。", "Browse all documentation using the navigation below.")}</p></noscript>
+      </div>
+      <div class="sidebar-groups">
+        {groups.map(group => <section class="sidebar-group"><h2>{group.title}</h2><ul>{group.pages.map(page => <li><a href={page.href} aria-current={page.id === doc.id ? 'page' : undefined}>{page.label}</a></li>)}</ul></section>)}
+      </div>
+      <a class="ai-docs-link" href={localizePath("/llms.txt", locale)}>llms.txt <span aria-hidden="true">↗</span></a>
+    </aside>
+    <main class="doc-main" id="main">
+      <div class="doc-breadcrumb"><a href={localizePath("/docs/", locale)}>{t("文档", "Docs")}</a><span aria-hidden="true">/</span><span>{doc.section}</span></div>
+      <div class="doc-title"><span class="eyebrow">LIGHTER / DOCUMENTATION</span><h1>{doc.title}</h1></div>
+      <article class="doc-content"><Content /></article>
+      <div class="doc-source"><a href={localizePath("/llms-full.txt", locale)}>{t("完整文档（纯文本）", "Full documentation (plain text)")} <span aria-hidden="true">↗</span></a><a href="https://github.com/Mou2xie/lighter/issues">{t("反馈问题 ↗", "Report an issue \u2197")}</a></div>
+      <div class="doc-pagination" aria-label={t("文档翻页", "Documentation pagination")}>
+        {previous ? <a href={previous.href}><span>{t("← 上一页", "\u2190 Previous")}</span><strong>{previous.label}</strong></a> : <span />}
+        {next ? <a href={next.href} class="next"><span>{t("下一页 →", "Next \u2192")}</span><strong>{next.label}</strong></a> : <span />}
+      </div>
+    </main>
+    <aside class="docs-toc" aria-label={t("本页目录", "Table of contents")}>
+      {toc.length > 0 && <><p>{t("本页内容", "On this page")}</p><ol>{toc.map(heading => <li class:list={[{ nested: heading.depth === 3 }]}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></>}
+      <div class="docs-version"><span>v0.1.0 / ALPHA</span><p>{t("API 可能发生变化。", "APIs may change.")}</p></div>
+    </aside>
+  </div>
+  <script>import '../scripts/docs';</script>
+</BaseLayout>

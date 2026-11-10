@@ -30,7 +30,7 @@ export default function remarkDocs() {
         svg = svg.replace(/id="([^"]+)"/g, `id="${prefix}-$1"`)
           .replace(/url\(#([^)]+)\)/g, `url(#${prefix}-$1)`);
         node.type = 'html';
-        node.value = `<figure class="doc-diagram" tabindex="0" aria-label="流程图，可横向滚动">${svg}</figure>`;
+        node.value = `<figure class="doc-diagram" tabindex="0" aria-label="${sourceId.startsWith('en/') ? 'Flowchart, horizontally scrollable' : '流程图，可横向滚动'}">${svg}</figure>`;
         delete node.lang;
       }
       for (const child of node.children || []) walk(child);

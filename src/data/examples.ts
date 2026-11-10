@@ -62,3 +62,70 @@ for await (const event of agent.stream({
 }`}
 };
 
+
+const englishSamples={
+ basic:{file:'hello.ts',output:'Moonlight Books',source:`import { Agent, Model, OpenAIProvider,
+  UserMessage } from "@yong_xie/lighter";
+
+// Connect your model provider
+const provider = new OpenAIProvider(
+  process.env.OPENAI_API_KEY!,
+  process.env.OPENAI_MODEL!
+);
+const agent = new Agent({
+  model: new Model(provider)
+});
+
+// Run your first agent
+const result = await agent.run({
+  messages: [new UserMessage("Name a bookstore on the moon.")]
+});
+
+console.log(result.messages.at(-1));`},
+ tool:{file:'tool.ts',output:'Tool returns 42 → Agent replies 19 + 23 = 42.',source:`import { Agent, Model, OpenAIProvider,
+  Tool, UserMessage } from "@yong_xie/lighter";
+import * as z from "zod";
+
+const add = new Tool({
+  name: "add",
+  description: "Return the sum of two numbers",
+  parametersZodSchema: z.strictObject({
+    a: z.number(), b: z.number()
+  }),
+  func: ({ a, b }) => a + b
+});
+const provider = new OpenAIProvider(
+  process.env.OPENAI_API_KEY!,
+  process.env.OPENAI_MODEL!
+);
+const agent = new Agent({
+  model: new Model(provider), tools: [add]
+});
+const result = await agent.run({
+  messages: [new UserMessage("Use add to calculate 19 + 23")]
+});
+console.log(result.messages);`},
+ stream:{file:'stream.ts',output:'Hello! How can I help?',source:`import { Agent, Model, OpenAIProvider,
+  UserMessage } from "@yong_xie/lighter";
+
+const provider = new OpenAIProvider(
+  process.env.OPENAI_API_KEY!,
+  process.env.OPENAI_MODEL!
+);
+const agent = new Agent({
+  model: new Model(provider)
+});
+
+// Receive text as the model generates it
+for await (const event of agent.stream({
+  messages: [new UserMessage("Hello!")]
+})) {
+  if ("type" in event &&
+      event.type === "text_delta") {
+    process.stdout.write(event.text);
+  }
+}`}
+};
+
+
+export function getSamples(locale: 'zh' | 'en') { return locale === 'en' ? englishSamples : samples; }

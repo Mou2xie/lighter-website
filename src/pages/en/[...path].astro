@@ -1,0 +1,29 @@
+---
+import { getDocs } from '../../lib/docs';
+export async function getStaticPaths() {
+  const docs = await getDocs('en');
+  return [
+    { params: { path: undefined }, props: { destination: '/' } },
+    { params: { path: '404' }, props: { destination: '/404.html' } },
+    ...docs.map(doc => ({
+      params: { path: doc.href.slice(1).replace(/\/$/, '') },
+      props: { destination: doc.href },
+    })),
+  ];
+}
+const { destination } = Astro.props;
+---
+<!doctype html>
+<html lang="en" data-redirect={destination}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirecting · Lighter</title>
+    <link rel="canonical" href={destination} />
+    <script is:inline>
+      location.replace(document.documentElement.dataset.redirect + location.search + location.hash);
+    </script>
+    <meta http-equiv="refresh" content={`0;url=${destination}`} />
+  </head>
+  <body><a href={destination}>Continue to Lighter →</a></body>
+</html>

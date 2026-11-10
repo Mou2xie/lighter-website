@@ -276,3 +276,17 @@ h2{font-size:29px}
 *,*:before,*:after{transition:none!important}
 }
 
+
+.header-actions{display:flex;align-items:center;gap:32px}
+.language-switch{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:14px;color:var(--muted);border-left:1px solid var(--line);padding-left:24px;white-space:nowrap}
+.language-switch:hover{color:var(--ink)}
+.language-switch svg{flex:none}
+html:lang(en) .hero h1{font-size:clamp(40px,4vw,58px);letter-spacing:-.04em;line-height:1.16}
+html:lang(en) .return-line span{font-size:10px}
+@media(max-width:760px){
+.header-actions{gap:12px}
+.language-switch{font-size:12px;padding-left:12px}
+html:lang(en) .hero h1{font-size:clamp(38px,8vw,52px)}
+html:lang(en) .return-line{margin-left:0;margin-right:0}
+html:lang(en) .return-line span{padding:0 8px;white-space:normal;text-align:center;width:85%;line-height:1.5}
+}

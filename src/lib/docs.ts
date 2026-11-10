@@ -17,20 +17,33 @@ const labels: Record<string, string> = {
   'advanced/model': '直接调用 Model', 'advanced/limits': '运行边界',
 };
 
+const englishSections: Record<string, string> = {
+  'getting-started': 'Getting started', guides: 'Guides', providers: 'Providers',
+  advanced: 'Advanced', reference: 'API reference',
+};
+const englishLabels: Record<string, string> = {
+  index: 'Introduction', 'getting-started/quickstart': 'Quickstart', 'getting-started/concepts': 'Core concepts',
+  'guides/configuration': 'Configure an agent', 'guides/tools': 'Add tools', 'guides/conversations': 'Conversation history',
+  'guides/streaming': 'Streaming', 'guides/hooks': 'Lifecycle hooks', 'guides/errors': 'Error handling',
+  'providers/index': 'Built-in providers', 'providers/custom': 'Custom providers',
+  'advanced/model': 'Use Model directly', 'advanced/limits': 'Runtime limits',
+};
+
 export function plainText(markdown: string) {
   return markdown.replace(/^```[^\n]*$/gm, '').replace(/!?\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/<[^>]+>/g, '').replace(/[#*`>|]/g, '').replace(/\s+/g, ' ').trim();
 }
 
-export async function getDocs() {
+export async function getDocs(locale: 'zh' | 'en' = 'en') {
   const entries = await getCollection('docs');
-  return entries.map(entry => {
+  return entries.filter(entry => entry.id.startsWith('en/') === (locale === 'en')).map(entry => {
+    const id = locale === 'en' ? entry.id.slice(3) : entry.id;
     const body = entry.body || '';
     const title = body.match(/^#\s+(.+)$/m)?.[1] || entry.id;
     const description = plainText(body.split(/\r?\n/).find(line => line.trim() && !line.startsWith('#')) || title);
-    const section = sections.find(group => group.ids.includes(entry.id) || entry.id.startsWith(`${group.key}/`));
-    return { entry, id: entry.id, title, label: labels[entry.id] || title.replace(/ API$/, ''),
-      description, href: docHref(entry.id), section: section?.title || '其他文档', body };
+    const section = sections.find(group => group.ids.includes(id) || id.startsWith(`${group.key}/`));
+    return { entry, id, locale, title, label: (locale === 'en' ? englishLabels : labels)[id] || title.replace(/ API$/, ''),
+      description, href: docHref(id, locale), section: section ? (locale === 'en' ? englishSections[section.key] : section.title) : (locale === 'en' ? 'Other' : '其他文档'), body };
   }).sort((a, b) => {
     const rank = (id: string) => order.includes(id) ? order.indexOf(id) : order.length;
     return rank(a.id) - rank(b.id) || a.id.localeCompare(b.id);
