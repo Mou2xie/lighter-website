@@ -1,5 +1,6 @@
 ---
 import { getDocs } from '../../lib/docs';
+import { absoluteUrl } from '../../lib/seo.mjs';
 export async function getStaticPaths() {
   const docs = await getDocs('en');
   return [
@@ -12,6 +13,7 @@ export async function getStaticPaths() {
   ];
 }
 const { destination } = Astro.props;
+const canonical = absoluteUrl(destination);
 ---
 <!doctype html>
 <html lang="en" data-redirect={destination}>
@@ -19,7 +21,7 @@ const { destination } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Redirecting · Lighter</title>
-    <link rel="canonical" href={destination} />
+    <link rel="canonical" href={canonical} />
     <script is:inline>
       location.replace(document.documentElement.dataset.redirect + location.search + location.hash);
     </script>

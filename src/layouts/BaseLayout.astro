@@ -1,5 +1,6 @@
 ---
 import { localeFromPath, localizePath, translate } from '../lib/i18n.mjs';
+import { absoluteUrl } from '../lib/seo.mjs';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -11,6 +12,11 @@ interface Props {
 }
 const locale = localeFromPath(Astro.url.pathname);
 const t = (zh: string, en: string) => translate(locale, zh, en);
+const pathname = Astro.url.pathname;
+const canonical = absoluteUrl(localizePath(pathname, locale));
+const alternateEn = absoluteUrl(localizePath(pathname, 'en'));
+const alternateZh = absoluteUrl(localizePath(pathname, 'zh'));
+const ogLocale = locale === 'en' ? 'en_US' : 'zh_CN';
 const {
   title = t('Lighter — 轻量化 TypeScript AI Agent 框架', 'Lighter — A lightweight TypeScript AI agent framework'),
   description = t('轻量的 TypeScript AI Agent 框架。连接模型，调用工具，开始创造。', 'A lightweight TypeScript AI agent framework. Connect models, call tools, and start building.'),
@@ -25,9 +31,21 @@ const {
     <meta name="theme-color" content="#191917" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+    <link rel="canonical" href={canonical} />
     <link rel="alternate" type="text/plain" href={localizePath('/llms.txt', locale)} title={t('AI 文档索引', 'AI documentation index')} />
-    <link rel="alternate" hreflang="zh-CN" href={localizePath(Astro.url.pathname, 'zh')} />
-    <link rel="alternate" hreflang="en" href={localizePath(Astro.url.pathname, 'en')} />
+    <link rel="alternate" hreflang="zh-CN" href={alternateZh} />
+    <link rel="alternate" hreflang="en" href={alternateEn} />
+    <link rel="alternate" hreflang="x-default" href={alternateEn} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Lighter" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={locale === 'en' ? 'zh_CN' : 'en_US'} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <title>{title}</title>
   </head>
   <body class={bodyClass}>
